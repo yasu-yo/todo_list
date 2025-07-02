@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}
+- Top -
+{% endblock %}
+
+{% block contents %}
+<div class="index">
+  <h1>Todo List</h1>
+  <a href="{% url 'add' %}" style="background-color: #28a745; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; display: inline-block; margin-bottom: 15px;">タスクを追加</a>
+
+  <!-- 未完了タスク一覧 -->
+  <ul>
+    {% for task in todo_list %}
+      {% if not task.complete %}
+      <li class="{% if task.complete %}complete{% endif %}">
+        <form action="{% url 'update_task_complete' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="task_id" value="{{ task.id }}">
+          <input type="checkbox" name="task_{{ task.id }}" onchange="this.form.submit()" {% if task.complete %}checked{% endif %}>
+
+          <div class="task-header">
+            <span class="task-title">{{ task.title }}</span>
+            <span class="task-date">
+              {{ task.start_date|date:"Y年m月d日 H:i" }} - {{ task.end_date|date:"Y年m月d日 H:i" }}
+            </span>
+          </div>
+
+          <p class="task-description">{{ task.description }}</p>
+        </form>  
+
+        <div style="margin-top: 10px;">
+          <a href="{% url 'edit' task.id %}" style="background-color: #007bff; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px; margin-right: 10px;">編集</a>
+          <a href="{% url 'delete' task.id %}" style="background-color: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;" onclick="return confirm('本当に削除しますか？');">削除</a>
+        </div>
+      </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+
+  <!-- 完了タスク一覧 -->
+  <div style="margin-top: 40px;">
+    <h2>タスク終了一覧</h2>
+    <ul>
+      {% for task in todo_list %}
+        {% if task.complete %}
+        <li class="complete">
+          <form action="{% url 'update_task_complete' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="task_id" value="{{ task.id }}">
+            <input type="checkbox" name="task_{{ task.id }}" onchange="this.form.submit()" checked>
+
+            <div class="task-header">
+              <span class="task-title">{{ task.title }}</span>
+              <span class="task-date">
+                {{ task.start_date|date:"Y年m月d日 H:i" }} - {{ task.end_date|date:"Y年m月d日 H:i" }}
+              </span>
+            </div>
+
+            <p class="task-description">{{ task.description }}</p>
+          </form>  
+
+          <div style="margin-top: 10px;">
+            <a href="{% url 'edit' task.id %}" style="background-color: #007bff; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px; margin-right: 10px;">編集</a>
+            <a href="{% url 'delete' task.id %}" style="background-color: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;" onclick="return confirm('本当に削除しますか？');">削除</a>
+          </div>
+        </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
