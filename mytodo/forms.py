@@ -11,8 +11,10 @@ class TaskForm(forms.ModelForm):
         model = Task
         fields = ('title', 'description', 'start_date', 'end_date') # フォームに表示するフィールドを指定
         widgets = { # 特定のフィールドの見た目を指定 datetime-localによりHTMLにて日付＋時刻入力フィールドになる
-            'start_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
-            'end_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'start_date': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+            'end_date': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
         }
 
     def __init__(self, *args, **kwargs): # フォームが生成されるときの初期化処理
@@ -20,6 +22,9 @@ class TaskForm(forms.ModelForm):
 
         self.fields["title"].widget.attrs = {'placeholder': 'タスク名'} # プレースホルダー（薄い説明文）を設定する
         self.fields["description"].widget.attrs = {'placeholder': '詳細'}
+        for field in self.fields.values():
+            existing_class = field.widget.attrs.get('class', '')
+            field.widget.attrs['class'] = f'{existing_class} form-control'.strip()
         for field in ['start_date', 'end_date']:
             if self.initial.get(field):
                 self.initial[field] = self.initial[field].strftime('%Y-%m-%dT%H:%M')

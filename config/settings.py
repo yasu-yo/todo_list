@@ -78,12 +78,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 default_dburl = "sqlite:///" + str(BASE_DIR / "db.sqlite3")
 DATABASES = {
     "default": config("DATABASE_URL", default=default_dburl, cast=dburl),
@@ -123,9 +117,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = str(BASE_DIR / "static")
+STATIC_ROOT = str(BASE_DIR / "staticfiles")
  # whitenoiseを使用する為、追加
-ES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
